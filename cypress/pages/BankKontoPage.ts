@@ -1,0 +1,5 @@
+class BankKontoPage {
+
+}
+
+export { BankKontoPage };
