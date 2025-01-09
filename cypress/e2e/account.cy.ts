@@ -10,4 +10,10 @@ describe('account validation checks', () => {
         .checkIBAN()
         .clickChangeData()
   })
+  it('checks successful data change', () => {
+    new BankKontoPage()
+        .checkIBAN()
+        .clickChangeData()
+        .changeSuccessful()
+  })
 })
