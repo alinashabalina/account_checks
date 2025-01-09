@@ -47,7 +47,6 @@ Cypress.Commands.add('login', (): void => {
 Cypress.Commands.add('getAccount', (): void => {
     cy.fixture('paths').then((data: pathsData) => {
         const sandwich_button: string = data.sandwich_button
-        const account_button: string = data.change_account_data_button
 
         cy.get(sandwich_button).click()
         cy.get("[data-testid='account']").should('be.visible').click()
