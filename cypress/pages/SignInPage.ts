@@ -1,5 +1,0 @@
-class SignInPage {
-
-}
-
-export { SignInPage };

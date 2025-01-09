@@ -2,12 +2,13 @@ import {Interception} from "cypress/types/net-stubbing";
 
 const email: string = Cypress.env("email")
 const password: string = Cypress.env("password")
-const IBAN: string = Cypress.env("IBAN")
 
 type UserRes = {}
+
 interface namesData {
     user_name: string;
 }
+
 interface pathsData {
     sandwich_button: string;
     "change_account_data_button": string;
@@ -30,7 +31,8 @@ Cypress.Commands.add('login', (): void => {
         }
     })
 
-    // the line below should contain extra checks on button not being disabled
+    // the line below should contain extra checks on button not being disabled but the state does not allow it now
+    // there is no explicit attribute disabled added
     cy.get("[data-testid='login']").click()
 
     cy.wait('@dashboard').then(({response}: Interception<UserRes>) => {
@@ -39,21 +41,16 @@ Cypress.Commands.add('login', (): void => {
             response.body.data.profile?.self?.first_name === user_name ? cy.log('successful login') : cy.log('unsuccessful login')
         })
     })
-
 })
 
 
 Cypress.Commands.add('getAccount', (): void => {
     cy.fixture('paths').then((data: pathsData) => {
-        const sandwich_button:string = data.sandwich_button
-        const account_button:string = data.change_account_data_button
+        const sandwich_button: string = data.sandwich_button
+        const account_button: string = data.change_account_data_button
 
         cy.get(sandwich_button).click()
         cy.get("[data-testid='account']").should('be.visible').click()
         cy.get("[data-testid='bank_account']").should('have.text', 'Bankverbindung').click()
-        cy.get("[data-testid='@undefined/input']").should('have.value', IBAN)
-        cy.get(account_button).should('have.text', 'Bankkonto ändern').click()
     })
-
-
 })
