@@ -7,13 +7,8 @@ describe('account validation checks', () => {
   })
   it('checks if we can click the button to change the data', () => {
     new BankKontoPage()
-        .checkIBAN()
-        .clickChangeData()
+        //.checkAccountDataNotChanged()
+        .checkAccountDataChangedSuccessfully()
   })
-  it('checks successful data change', () => {
-    new BankKontoPage()
-        .checkIBAN()
-        .clickChangeData()
-        .changeSuccessful()
-  })
+
 })
