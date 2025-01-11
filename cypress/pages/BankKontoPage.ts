@@ -27,7 +27,10 @@ class BankKontoPage {
     bankverbindung: string = paths_values.bankverbindung
     username: string = names_values.user_name
     iban_data: string
-    als_bic: string = paths_values.als_bic
+    pflichtfeld: string = 'Pflichtfeld'
+    red_note: string = 'Bitte prüfe fehlende oder fehlerhafte Angaben.'
+    not_valid_iban: string = 'Die IBAN is ungültig'
+    not_valid_bic: string = 'Die BIC ist ungültig'
 
 
     save() {
@@ -91,6 +94,41 @@ class BankKontoPage {
         })
         this.save()
         cy.get("[data-testid='@undefined/input']").eq(0).should('contain.value', iban)
+        return this
+    }
+
+    checkAccountDataSaveWithoutIban() {
+        this.checkAccountData()
+        cy.get("[data-testid='@undefined/input']").eq(2).clear()
+
+        this.save()
+        cy.fixture('paths').then((paths: any) => {
+            cy.get(paths['pflichtfeld']).should('contain.text', this.pflichtfeld)
+            cy.get(paths['angaben_pruefen']).should('contain.text', this.red_note)
+        })
+        return this
+    }
+
+    checkAccountDataSaveWithMissingIbanNumber() {
+        this.checkAccountData()
+        cy.get("[data-testid='@undefined/input']").eq(2).type('{backspace}')
+        this.save()
+        cy.fixture('paths').then((paths: any) => {
+            cy.get(paths['pflichtfeld']).should('contain.text', this.not_valid_iban)
+            cy.get(paths['angaben_pruefen']).should('contain.text', this.red_note)
+        })
+        return this
+    }
+
+    checkAccountDataSaveWithMissingBicNumber() {
+        this.checkAccountData()
+        cy.get("[data-testid='@undefined/input']").eq(3).type('{backspace}')
+        this.save()
+        cy.wait(100)
+        cy.fixture('paths').then((paths: any) => {
+            cy.get(paths['bic_pflichtfeld']).should('contain.text', this.not_valid_bic)
+            cy.get(paths['angaben_pruefen']).should('contain.text', this.red_note)
+        })
         return this
     }
 

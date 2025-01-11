@@ -25,4 +25,19 @@ describe('account validation checks', () => {
         })
 
     })
+
+    it('checks that account without iban will not be saved', () => {
+        new BankKontoPage()
+            .checkAccountDataSaveWithoutIban()
+    })
+
+    it('checks that account with missing iban number will not be saved', () => {
+        new BankKontoPage()
+            .checkAccountDataSaveWithMissingIbanNumber()
+    })
+
+    it('checks that account with missing iban number will not be saved', () => {
+        new BankKontoPage()
+            .checkAccountDataSaveWithMissingBicNumber()
+    })
 })
