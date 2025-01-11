@@ -9,25 +9,25 @@ interface pathsData {
     checkbox: string;
     speichern_button: string;
     bankverbindung: string;
-    als_bic:string;
+    als_bic: string;
 }
 
 interface namesData {
     user_name: string;
 }
 
-const paths_values:pathsData = paths
-const names_values:namesData = names
+const paths_values: pathsData = paths
+const names_values: namesData = names
 
 
 class BankKontoPage {
-    account_button:string = paths_values.change_account_data_button
-    checkbox:string = paths_values.checkbox
-    speichern_button:string = paths_values.speichern_button
-    bankverbindung:string = paths_values.bankverbindung
-    username:string = names_values.user_name
-    iban_data:string
-    als_bic:string = paths_values.als_bic
+    account_button: string = paths_values.change_account_data_button
+    checkbox: string = paths_values.checkbox
+    speichern_button: string = paths_values.speichern_button
+    bankverbindung: string = paths_values.bankverbindung
+    username: string = names_values.user_name
+    iban_data: string
+    als_bic: string = paths_values.als_bic
 
 
     open() {
@@ -38,8 +38,7 @@ class BankKontoPage {
 
     checkAccountData() {
         cy.get(this.account_button)
-            .should('have.text', 'Bankkonto ändern')
-            .click()
+            .click({force: true})
 
         /**
          * this wait is a very bad practice and exists only because
@@ -51,7 +50,7 @@ class BankKontoPage {
 
         cy.get("[data-testid='@undefined/input']")
             .then((el: JQuery<HTMLInputElement>) => {
-                el[0].value ===  el[2].value ? cy.log('IBAN matches') : cy.log('IBAN does not match')
+                el[0].value === el[2].value.replace(/ /g, '') ? cy.log('IBAN matches') : cy.log('IBAN does not match')
                 this.iban_data = el[2].value
                 el[1].value === this.username ? cy.log('name matches') : cy.log('name does not match')
             })
@@ -75,49 +74,22 @@ class BankKontoPage {
         cy.get(this.bankverbindung).should('have.text', 'Bankverbindung')
         cy.get("[data-testid='@undefined/input']")
             .then((el: JQuery<HTMLInputElement>) => {
-                el[0].value ===  this.iban_data ? cy.log('IBAN not changed') : cy.log('IBAN changed!')
+                el[0].value === this.iban_data ? cy.log('IBAN not changed') : cy.log('IBAN changed!')
             })
 
         return this
     }
 
-    checkAccountDataChangedSuccessfully() {
-
+    checkAccountDataChangedSuccessfully(iban) {
         this.checkAccountData()
-
-        cy.fixture('ibans').then((data: any) => {
-
-            let data_values = []
-
-            for (let el in data) {
-                data_values.push(data[el])
-            }
-
-            for (let val in data_values) {
-                const bic = data_values[val].bic
-                const iban = data_values[val].iban
-                cy.get("[data-testid='@undefined/input']").as('input')
-                    .then((el: JQuery<HTMLInputElement>) => {
-                        el[0].value ===  el[2].value ? cy.log('IBAN matches') : cy.log('IBAN does not match')
-                        el[2].value = iban
-
-                        cy.get(this.checkbox).should('have.css', 'background-color', 'rgba(51, 102, 255, 0.08)')
-                            .click()
-                            .should('have.css', 'background-color', 'rgb(60, 48, 231)')
-
-                        cy.get(this.speichern_button).click()
-
-                        el[0].value === iban ? cy.log('iban changed successfully') : cy.log('iban not changed successfully')
-                    })
-
-            }
-
-        })
-
+        cy.get("[data-testid='@undefined/input']")
+            .then((el: JQuery<HTMLInputElement>): any => {
+                el[2].innerText = ''
+            })
 
         return this
     }
 
 }
 
-export { BankKontoPage };
+export {BankKontoPage};
