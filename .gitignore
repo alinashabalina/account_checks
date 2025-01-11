@@ -2,3 +2,4 @@
 /node_modules/
 /reports/
 /Merged-JUnit-report.xml
+/cypress/screenshots/
