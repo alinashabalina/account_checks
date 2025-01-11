@@ -1,9 +1,12 @@
 import {BankKontoPage} from "../pages/BankKontoPage";
 
 describe('account validation checks', () => {
+
     beforeEach(() => {
         cy.login()
         cy.getAccount()
+        cy.getRandomIban()
+
     })
 
 
@@ -12,20 +15,14 @@ describe('account validation checks', () => {
             .checkAccountDataNotChanged()
     })
 
-    it('checks that account data can be successfully changed', () => {
-
-        cy.fixture('ibans').then((data: any) => {
-            const data_values = []
-            for (let el in data) {
-                data_values.push(data[el])
-            }
-
-            for (let val in data_values) {
-                const bic = data_values[val].bic
-                const iban = data_values[val].iban
+    it('checks that new account data can be successfully changed', () => {
+        cy.get('@ibanVariable').then(iban => {
+            cy.get('@bicVariable').then(bic => {
                 new BankKontoPage()
-                    .checkAccountDataChangedSuccessfully(iban)
-            }
+                    .checkAccountDataChangedSuccessfully(iban, bic)
+
+            })
         })
+
     })
 })

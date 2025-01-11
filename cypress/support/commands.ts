@@ -38,7 +38,8 @@ Cypress.Commands.add('login', (): void => {
     cy.wait('@dashboard').then(({response}: Interception<UserRes>) => {
         cy.fixture('names').then((data: namesData) => {
             const user_name: string = data.user_name
-            response.body.data.profile?.self?.first_name === user_name ? cy.log('successful login') : cy.log('unsuccessful login')
+            const full_name:string = response.body.data.profile?.self?.first_name + ' ' + response.body.data.profile?.self?.last_name
+            full_name === user_name ? cy.log('successful login') : cy.log('unsuccessful login')
         })
     })
 })
@@ -53,3 +54,24 @@ Cypress.Commands.add('getAccount', (): void => {
         cy.get("[data-testid='bank_account']").should('have.text', 'Bankverbindung').click()
     })
 })
+
+Cypress.Commands.add('getRandomIban', (): void => {
+    const data_values = []
+    cy.fixture('ibans').then((data: any) => {
+        for (let el in data) {
+            data_values.push(data[el])
+        }
+
+        const keys = Object.keys(data_values);
+        const len:number = keys.length
+        const rnd:number = Math.floor(Math.random() * len);
+        const key = data_values[keys[rnd]];
+
+        const bic = key.bic
+        const iban = key.iban
+        cy.wrap(bic).as("bicVariable")
+        cy.wrap(iban).as("ibanVariable")
+    });
+})
+
+

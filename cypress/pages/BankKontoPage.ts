@@ -30,6 +30,15 @@ class BankKontoPage {
     als_bic: string = paths_values.als_bic
 
 
+    save() {
+        cy.get(this.checkbox).should('have.css', 'background-color', 'rgba(51, 102, 255, 0.08)')
+            .click()
+            .should('have.css', 'background-color', 'rgb(60, 48, 231)')
+        cy.get(this.speichern_button).as('btn')
+        cy.get('@btn').click()
+    }
+
+
     open() {
         cy.visit('/mein-konto/bankdaten')
         return this
@@ -41,9 +50,9 @@ class BankKontoPage {
             .click({force: true})
 
         /**
-         * this wait is a very bad practice and exists only because
-         * non-visibility of loader does not guarantee visibility of prop values in the inputs
-         * even with no throttling
+         * this wait is a very bad practice, and it exists in different places of the code only because
+         * non-visibility of loader does not guarantee visibility of prop values in the inputs due to reactivity
+         * even with no throttling on
          */
 
         cy.wait(300)
@@ -62,14 +71,7 @@ class BankKontoPage {
 
         this.checkAccountData()
 
-
-        // the check based on the change of the background-color in css is not perfect
-        // still there is nothing else to check yet
-        cy.get(this.checkbox).should('have.css', 'background-color', 'rgba(51, 102, 255, 0.08)')
-            .click()
-            .should('have.css', 'background-color', 'rgb(60, 48, 231)')
-
-        cy.get(this.speichern_button).click()
+        this.save()
 
         cy.get(this.bankverbindung).should('have.text', 'Bankverbindung')
         cy.get("[data-testid='@undefined/input']")
@@ -80,13 +82,15 @@ class BankKontoPage {
         return this
     }
 
-    checkAccountDataChangedSuccessfully(iban) {
+    checkAccountDataChangedSuccessfully(iban, bic) {
         this.checkAccountData()
-        cy.get("[data-testid='@undefined/input']")
-            .then((el: JQuery<HTMLInputElement>): any => {
-                el[2].innerText = ''
-            })
-
+        cy.get("[data-testid='@undefined/input']").eq(2).clear().type(iban)
+        cy.wait(200)
+        cy.fixture('paths').then((paths: any) => {
+            cy.get(paths['als_bic']).should('contain.text', bic).click()
+        })
+        this.save()
+        cy.get("[data-testid='@undefined/input']").eq(0).should('contain.value', iban)
         return this
     }
 
