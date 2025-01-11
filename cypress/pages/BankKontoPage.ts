@@ -29,7 +29,7 @@ class BankKontoPage {
     iban_data: string
     pflichtfeld: string = 'Pflichtfeld'
     red_note: string = 'Bitte prüfe fehlende oder fehlerhafte Angaben.'
-    not_valid_iban: string = 'Die IBAN is ungültig'
+    not_valid_iban: string = 'Die IBAN ist ungültig'
     not_valid_bic: string = 'Die BIC ist ungültig'
 
 

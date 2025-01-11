@@ -15,7 +15,7 @@ describe('account validation checks', () => {
             .checkAccountDataNotChanged()
     })
 
-    it('checks that new account data can be successfully changed', () => {
+    it(' T1: checks that new account data can be successfully changed', () => {
         cy.get('@ibanVariable').then(iban => {
             cy.get('@bicVariable').then(bic => {
                 new BankKontoPage()

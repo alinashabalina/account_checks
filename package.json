@@ -1,6 +1,7 @@
 {
   "devDependencies": {
     "cypress": "^13.17.0",
+    "cypress-testrail": "^2.10.0",
     "cypress-xpath": "^2.0.1",
     "typescript": "^5.7.3"
   },
