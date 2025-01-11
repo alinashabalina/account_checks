@@ -9,13 +9,7 @@ describe('account validation checks', () => {
 
     })
 
-
-    it('checks that account data can be saved without changes', () => {
-        new BankKontoPage()
-            .checkAccountDataNotChanged()
-    })
-
-    it(' T1: checks that new account data can be successfully changed', () => {
+    it('C1: checks that new account data can be successfully changed', () => {
         cy.get('@ibanVariable').then(iban => {
             cy.get('@bicVariable').then(bic => {
                 new BankKontoPage()
@@ -26,17 +20,23 @@ describe('account validation checks', () => {
 
     })
 
-    it('checks that account without iban will not be saved', () => {
+    it('C2: checks that account data can be saved without changes', () => {
+        new BankKontoPage()
+            .checkAccountDataNotChanged()
+    })
+
+
+    it('C3: checks that account without iban will not be saved', () => {
         new BankKontoPage()
             .checkAccountDataSaveWithoutIban()
     })
 
-    it('checks that account with missing iban number will not be saved', () => {
+    it('C4: checks that account with missing iban digit will not be saved', () => {
         new BankKontoPage()
             .checkAccountDataSaveWithMissingIbanNumber()
     })
 
-    it('checks that account with missing iban number will not be saved', () => {
+    it('C5: checks that account with missing bic number will not be saved', () => {
         new BankKontoPage()
             .checkAccountDataSaveWithMissingBicNumber()
     })

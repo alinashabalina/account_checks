@@ -1,2 +1,4 @@
 /cypress.env.json
 /node_modules/
+/reports/
+/Merged-JUnit-report.xml

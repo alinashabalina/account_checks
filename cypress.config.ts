@@ -9,5 +9,6 @@ module.exports = defineConfig({
       return require('./cypress/plugins/index.ts')(on, config)
     },
     supportFile: "cypress/support/index.ts",
+    experimentalInteractiveRunEvents: true,
   },
 });
