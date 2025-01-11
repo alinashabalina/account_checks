@@ -16,10 +16,15 @@ The tests use test IBAN data stored in cypress/fixtures/ibans.json taken from ht
 Repo structure:
 
 cypress/e2e/something.cy.ts - all the existing tests
+
 cypress/fixtures/something.json - test data stored in the repo and acquired in the tests via cy.fixture() command
+
 cypress/pages/SomePage.ts - page object model storing all selectors and functions for a certain page in the application
+
 cypress/plugins/index.ts - plugins used with Cypress (e.g. Testrail)
+
 cypress/support/index.ts - types for commands
+
 cypress/support/commands.ts - custom cypress commands used in the tests (e.g. cy.login())
 
 cypress.env.json contains sensitive data such as credentials and Testrail settings => added to .gitignore 
