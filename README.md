@@ -30,4 +30,4 @@ cypress/support/index.ts - types for commands
 
 cypress/support/commands.ts - custom cypress commands used in the tests (e.g. cy.login())
 
-cypress.env.json contains sensitive data such as credentials and Testrail settings => added to .gitignore
+cypress.env.json contains sensitive data such as credentials and Testrail settings => the only thing pushed to GitHub is non-sensitive data
