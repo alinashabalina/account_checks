@@ -1,10 +1,14 @@
 import {BankKontoPage} from "../pages/BankKontoPage";
+import {LoginPage} from "../pages/LoginPage";
+import {PersonalAreaPage} from "../pages/UserAccount";
 
 describe('account validation checks', () => {
 
     beforeEach(() => {
-        cy.login()
-        cy.getAccount()
+        new LoginPage()
+            .login()
+        new PersonalAreaPage()
+            .navigateToBankAccountData()
         cy.getRandomIban()
 
     })

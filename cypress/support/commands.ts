@@ -16,7 +16,6 @@ interface pathsData {
 
 
 Cypress.Commands.add('login', (): void => {
-    cy.visit("https://alpha-app.master-z.de/")
     cy.setCookie('CookieConsent', 'true')
     cy.get("[data-testid='@email/input']").type(email)
     cy.get("[data-testid='@password/input']").type(password)
