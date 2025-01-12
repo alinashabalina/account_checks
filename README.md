@@ -7,7 +7,7 @@ to test the functionality without Testrail report run **npm run cy:open**
 to test the functionality and send a Testrail report **run npm run cy:testrail**
 
 All the tests in the cypress/e2e/account.cy.ts are marked with corresponding testcases from Testrail.
-If a test fails in the report mode (**run npm run cy:testrail**), it will be seen on the page https://zastatrial.testrail.io/index.php?/runs/view/1
+If a test fails in the report mode (**run npm run cy:testrail**), it will be seen on the page {put_the_testrail_url_here}/index.php?/runs/view/1
 If a test fails in the run mode (**npm run cy:open**), it will not be marked on the page as 'failed'
 
 The tests use test IBAN data stored in cypress/fixtures/ibans.json taken from https://ibanvalidieren.de/beispiele.html
