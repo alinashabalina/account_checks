@@ -11,7 +11,10 @@ If a test fails in the report mode (**run npm run cy:testrail**), it will be see
 If a test fails in the run mode (**npm run cy:open**), it will not be marked on the page as 'failed'
 
 The tests use test IBAN data stored in cypress/fixtures/ibans.json taken from https://ibanvalidieren.de/beispiele.html
+Non-european IBAN examples are taken from https://www.iban.com/structure
 
+
+The tests can be run in Docker or in Jenkins (see Dockerfile and Jenkinsfile respectfully)
 
 Repo structure:
 
@@ -27,4 +30,4 @@ cypress/support/index.ts - types for commands
 
 cypress/support/commands.ts - custom cypress commands used in the tests (e.g. cy.login())
 
-cypress.env.json contains sensitive data such as credentials and Testrail settings => added to .gitignore 
+cypress.env.json contains sensitive data such as credentials and Testrail settings => added to .gitignore

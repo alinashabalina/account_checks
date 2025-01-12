@@ -31,6 +31,10 @@ class BankKontoPage {
     red_note: string = 'Bitte prüfe fehlende oder fehlerhafte Angaben.'
     not_valid_iban: string = 'Die IBAN ist ungültig'
     not_valid_bic: string = 'Die BIC ist ungültig'
+    non_european_iban:string = 'EG800002000156789012345180002'
+    non_european_error:string = 'Wir können nur auf eine europäische IBAN aus dem SEPA-Raum auszahlen.'
+    iban_35:string = 'EG345678901234567890123456789012345'
+    iban_german_max = 'DE893704004405320130001'
 
 
     save() {
@@ -41,21 +45,19 @@ class BankKontoPage {
         cy.get('@btn').click()
     }
 
-
-    open() {
+    /*open() {
         cy.visit('/mein-konto/bankdaten')
         return this
-    }
-
+    }*/
 
     checkAccountData() {
         cy.get(this.account_button)
             .click({force: true})
 
         /**
-         * this wait is a very bad practice, and it exists in different places of the code only because
-         * non-visibility of loader does not guarantee visibility of prop values in the inputs due to reactivity
-         * even with no throttling on
+         * the wait throughout all the functions is a very bad practice, and it exists
+         * only because the non-visibility of loader does not guarantee visibility of prop values
+         * in the inputs due to reactivity even with no throttling on
          */
 
         cy.wait(300)
@@ -88,11 +90,12 @@ class BankKontoPage {
     checkAccountDataChangedSuccessfully(iban, bic) {
         this.checkAccountData()
         cy.get("[data-testid='@undefined/input']").eq(2).clear().type(iban)
-        cy.wait(200)
+        cy.wait(500)
         cy.fixture('paths').then((paths: any) => {
             cy.get(paths['als_bic']).should('contain.text', bic).click()
         })
         this.save()
+
         cy.get("[data-testid='@undefined/input']").eq(0).should('contain.value', iban)
         return this
     }
@@ -129,6 +132,132 @@ class BankKontoPage {
             cy.get(paths['bic_pflichtfeld']).should('contain.text', this.not_valid_bic)
             cy.get(paths['angaben_pruefen']).should('contain.text', this.red_note)
         })
+        return this
+    }
+
+    checkAccountDataSaveWithNonEuropeanIban() {
+        this.checkAccountData()
+        cy.get("[data-testid='@undefined/input']").eq(2).clear().type(this.non_european_iban)
+        this.save()
+        cy.wait(100)
+        cy.fixture('paths').then((paths: any) => {
+            cy.get(paths['pflichtfeld']).should('contain.text', this.non_european_error)
+            cy.get(paths['angaben_pruefen']).should('contain.text', this.red_note)
+        })
+        return this
+    }
+
+    checkDataAfterPageRefreshWithUnsuccessfulDataSave() {
+        this.checkAccountDataSaveWithNonEuropeanIban()
+        cy.reload()
+        cy.get("[data-testid='@undefined/input']").eq(2).should('not.have.value', this.non_european_iban)
+    }
+
+    checkDisabledNameInput() {
+        this.checkAccountData()
+        cy.get("[data-testid='@undefined/input']").eq(1).should('be.disabled')
+    }
+
+    checkAccountDataSaveWithoutBic() {
+        this.checkAccountData()
+        cy.get("[data-testid='@undefined/input']").eq(3).clear()
+        this.save()
+        cy.wait(100)
+        cy.fixture('paths').then((paths: any) => {
+            cy.get(paths['bic_pflichtfeld']).should('contain.text', this.pflichtfeld)
+            cy.get(paths['angaben_pruefen']).should('contain.text', this.red_note)
+        })
+        return this
+    }
+
+    checkChangedAccountDataSaveWithoutConsent(iban, bic) {
+        this.checkAccountData()
+        cy.get("[data-testid='@undefined/input']").eq(2).clear().type(iban)
+        cy.wait(500)
+        cy.fixture('paths').then((paths: any) => {
+            cy.get(paths['als_bic']).should('contain.text', bic).click()
+            cy.get(this.speichern_button).as('btn')
+            cy.get('@btn').click()
+            cy.get(paths['angaben_pruefen']).should('contain.text', this.red_note)
+            // it is necessary to add some checks on the checkbox but the only change is the 'background-color'
+            // and it is not the most stable thing so no check added
+            // the same applies to the checkNonChangedAccountDataSaveWithoutConsent() function
+        })
+
+        return this
+    }
+
+
+    checkNonChangedAccountDataSaveWithoutConsent() {
+        this.checkAccountData()
+        cy.fixture('paths').then((paths: any) => {
+            cy.get(this.speichern_button).as('btn')
+            cy.get('@btn').click()
+            cy.get(paths['angaben_pruefen']).should('contain.text', this.red_note)
+        })
+
+        return this
+    }
+
+    checkAccountDataSaveWithoutIbanAndBic() {
+        this.checkAccountData()
+        cy.get("[data-testid='@undefined/input']").eq(2).clear()
+        cy.get("[data-testid='@undefined/input']").eq(3).clear()
+        this.save()
+        cy.wait(100)
+        cy.fixture('paths').then((paths: any) => {
+            cy.get(paths['pflichtfeld']).should('contain.text', this.pflichtfeld)
+            cy.get(paths['bic_pflichtfeld']).should('contain.text', this.pflichtfeld)
+            cy.get(paths['angaben_pruefen']).should('contain.text', this.red_note)
+        })
+        return this
+    }
+
+    checkAccountDataSaveWithInvalidIbanAndBicSpecialCharacters() {
+        // Attention! this test shows that we cannot type special characters into the IBAN input, but we can type them
+        // into the BIC field which seems wrong !
+        this.checkAccountData()
+        cy.get("[data-testid='@undefined/input']").eq(2).type('{backspace}').type('?')
+        cy.get("[data-testid='@undefined/input']").eq(3).type('{backspace}').type('!')
+        this.save()
+        cy.wait(100)
+        cy.fixture('paths').then((paths: any) => {
+            cy.get(paths['pflichtfeld']).should('contain.text', this.not_valid_iban)
+            cy.get(paths['bic_pflichtfeld']).should('contain.text', this.not_valid_bic)
+            cy.get(paths['angaben_pruefen']).should('contain.text', this.red_note)
+        })
+        cy.get("[data-testid='@undefined/input']").eq(2).should('not.contain.value', '?')
+        // not checking the BIC field since it still contains the special character
+        return this
+    }
+
+    checkAccountDataSaveWithInvalidIbanMax() {
+        /*according to the standards the German IBAN consists of 22 characters
+        whereas the global standard agrees that the IBAN may consist of up to 34 charactes
+        there seems to be no SEPA available 34 character IBANs so this test will check that the iban is 'ungültig'
+        in both cases
+        still it seems that the input should not allow more than 34 'possibly allowed characters' for the sake of safety*/
+        this.checkAccountData()
+        cy.get("[data-testid='@undefined/input']").eq(2).clear().type(this.iban_german_max)
+        this.save()
+        cy.wait(100)
+        cy.fixture('paths').then((paths: any) => {
+            cy.get(paths['pflichtfeld']).should('contain.text', this.not_valid_iban)
+            cy.get(paths['angaben_pruefen']).should('contain.text', this.red_note)
+        })
+        cy.get("[data-testid='@undefined/input']").eq(2).clear().type(this.iban_35)
+        cy.fixture('paths').then((paths: any) => {
+            cy.get(paths['pflichtfeld']).should('contain.text', this.not_valid_iban)
+            cy.get(paths['angaben_pruefen']).should('contain.text', this.red_note)
+        })
+        return this
+    }
+
+    checkAccountDataSaveWithInvalidIbanCyrillicCharacters() {
+        this.checkAccountData()
+        // the iban seems ok but the first 'C' is actually Cyrillic
+        cy.get("[data-testid='@undefined/input']").eq(2).type('{backspace}').type('СY21002001950000357001234567')
+        cy.get("[data-testid='@undefined/input']").eq(2).should('not.contain.value', 'С')
         return this
     }
 
