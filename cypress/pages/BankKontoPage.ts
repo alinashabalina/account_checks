@@ -78,7 +78,7 @@ class BankKontoPage {
         cy.get(this.account_button)
             .click({force: true})
 
-        /**
+        /*
          * the wait throughout all the functions is a very bad practice, and it exists
          * only because the non-visibility of loader does not guarantee visibility of prop values
          * in the inputs due to reactivity even with no throttling on
@@ -119,6 +119,9 @@ class BankKontoPage {
             cy.get(paths['als_bic']).should('contain.text', bic).click()
         })
         this.save()
+
+        // this line checks that after the successful save of the data and redirect
+        // the updated IBAN is displayed correctly in the bank details view
         cy.get("[data-testid='@undefined/input']").eq(0).should('contain.value', iban)
 
         return this
@@ -265,8 +268,8 @@ class BankKontoPage {
         /*according to the standards the German IBAN consists of 22 characters
         whereas the global standard agrees that the IBAN may consist of up to 34 charactes
         there seems to be no SEPA available 34 character IBANs so this test will check that the iban is 'ungültig'
-        in both cases
-        still it seems that the input should not allow more than 34 'possibly allowed characters' for the sake of safety*/
+        in both cases still it seems that the input should not allow more than
+        34 'possibly allowed characters' for the sake of safety*/
         this.checkAccountData()
         cy.get("[data-testid='@undefined/input']").eq(2).clear().type(this.iban_german_max)
         this.save()
