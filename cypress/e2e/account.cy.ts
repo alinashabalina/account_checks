@@ -1,3 +1,9 @@
+/*
+* This test suite is based on the testcases stored in Testrail https://zastatrial.testrail.io/
+* The tests call the methods stored in the BankKontoPage where all the checks happen
+* */
+
+
 import {BankKontoPage} from "../pages/BankKontoPage";
 import {LoginPage} from "../pages/LoginPage";
 import {PersonalAreaPage} from "../pages/UserAccount";

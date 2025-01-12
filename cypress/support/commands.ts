@@ -1,3 +1,8 @@
+/*
+* This section - commands - is where all custom cypress commands are stored and later used on pages and in the tests
+* */
+
+
 import {Interception} from "cypress/types/net-stubbing";
 
 const email: string = Cypress.env("email")
