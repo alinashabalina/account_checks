@@ -9,6 +9,8 @@ declare global {
             getAccount(): Chainable<void>;
             getRandomIban(): any;
             getAPath():Chainable<string>;
+            getLighthouseMetrics(endpoint: string): JSON;
+            exec(): any
         }
     }
 }

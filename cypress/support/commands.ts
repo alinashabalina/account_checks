@@ -79,3 +79,16 @@ Cypress.Commands.add('getRandomIban', (): void => {
 })
 
 
+Cypress.Commands.add('getLighthouseMetrics', (endpoint:string): JSON => {
+    function arr(start, finish): number[] {return Array.from({length: finish - start + 1}, (_, a) => a + start)}
+    const refs: any = {"min": arr(0, 49),
+    "mid": arr(50, 89),
+    "up": arr(90, 100)}
+    let data_res
+    cy.exec(`lighthouse ${'https://alpha-app.master-z.de/' + endpoint} --output=json`).then((result) => {
+        data_res = JSON.parse(result.stdout)
+    })
+    return data_res
+})
+
+
