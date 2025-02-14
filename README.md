@@ -1,4 +1,4 @@
-The following repo is a combination of Cypress tests written with TypeScript for Zasta GmbH
+The following repo is a combination of Cypress tests written with TypeScript.
 
 To test the change of the bank account clone the repo and:
 
