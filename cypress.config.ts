@@ -3,7 +3,7 @@ import {defineConfig} from "cypress";
 module.exports = defineConfig({
 
   e2e: {
-    baseUrl: 'https://alpha-app.master-z.de/',
+    baseUrl: '',
     setupNodeEvents(on, config)
     {
       return require('./cypress/plugins/index.ts')(on, config)
